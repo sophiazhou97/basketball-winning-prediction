@@ -16,8 +16,10 @@ library(pls)
 #import files
 ```{r}
 train <- read.csv("~/Downloads/fall-2019-stats-101c/train.csv")
+test<-read.csv("~/Downloads/fall-2019-stats-101c/test.csv")
 #exclude catagorical variable
 clean<-train[,-c(1,2,4,5,6,7,8)]
+test<-test[,-c(1:7)]
 clean$HTWins<-ifelse(clean$HTWins=="Yes", 1, 0)
 ```
 
