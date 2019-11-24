@@ -18,28 +18,28 @@ library(pls)
 train <- read.csv("~/Downloads/fall-2019-stats-101c/train.csv")
 test<-read.csv("~/Downloads/fall-2019-stats-101c/test.csv")
 #exclude catagorical variable
-clean<-train[,-c(1,2,4,5,6,7,8)]
+train<-train[,-c(1,2,4,5,6,7,8)]
 test<-test[,-c(1:7)]
-clean$HTWins<-ifelse(clean$HTWins=="Yes", 1, 0)
+train$HTWins<-as.factor(train$HTWins)
 ```
 
 #PLS
 ```{r}
-pls.fit<-plsr(HTWins ~.,data=clean, scale=T, validation="CV")
+pls.fit<-plsr(HTWins ~.,data=train, scale=T, validation="CV")
 validationplot(pls.fit, val.type="MSEP")
 summary(pls.fit)
-pred.pls<-predict(pls.fit,test[,-1],ncomp=10,type="response)
+pred.pls<-predict(pls.fit,test,ncomp=10,type="response)
 predict<-ifelse(pred.pls>0.5,"Yes","No") 
-table(predict,test[,1])
+table(predict,test)
 ```
 #PCR
 ```{r}
-model.pcr<-pcr(HTWins~.,data=clean,scale=T,validation="CV") 
+model.pcr<-pcr(HTWins~.,data=train,scale=T,validation="CV") 
 summary(model.pcr)
 validationplot(model.pcr, val.type="MSEP")
-pred.pcr<-predict(model.pcr, test[,-1],ncomp=10)
+pred.pcr<-predict(model.pcr, test,ncomp=10)
 predict<-ifelse(pred.pcr>0.5,"Yes","No") 
-table(predict,test[,1])
+table(predict,test)
 ```
 
 ```{r}
