@@ -30,3 +30,43 @@ validationplot(model.pcr, val.type="MSEP")
 print(model.pcr[["coefficients"]][,,10])
 ```
 
+```{r}
+index <- sample(1:9520,7000,replace = T)
+usetrain <- train[index,]
+usetest <- train[-index,]
+```
+```{r}
+library(glmnet)
+x <- model.matrix(HTWins~.,data = usetrain)
+y <- ifelse(usetrain$HTWins=="Yes", 1, 0)
+
+lambda <- 10^seq(10,-2,length=100)
+lasso <- glmnet(x,y,alpha = 1,lambda = lambda)
+cvlasso <- cv.glmnet(x,y,alpha = 1,lambda = lambda)
+plot(cvlasso)
+best <- cvlasso$lambda.min
+bestlasso <- glmnet(x,y,alpha = 1,lambda = best)
+predict<-predict(bestlasso,newx=model.matrix(HTWins~.,data = usetest),s=best,type="response")
+p<-ifelse(predict>0.5,"Yes","No")
+table(usetest$HTWins,p)
+mean(usetest$HTWins == p)
+```
+
+```{r}
+library(glmnet)
+x <- model.matrix(HTWins~.,data = usetrain)
+y <- ifelse(usetrain$HTWins=="Yes", 1, 0)
+
+lambda <- 10^seq(10,-2,length=100)
+ridge <- glmnet(x,y,alpha = 0,lambda = lambda)
+cvridge <- cv.glmnet(x,y,alpha = 0,lambda = lambda)
+plot(cvridge)
+best <- cvridge$lambda.min
+bestridge <- glmnet(x,y,alpha = 0,lambda = best)
+predict<-predict(bestridge,newx=model.matrix(HTWins~.,data = usetest),s=best,type="response")
+p<-ifelse(predict>0.5,"Yes","No")
+table(usetest$HTWins,p)
+mean(usetest$HTWins == p)
+
+pred.ridge=predict(bestridge,newx=model.matrix(HTWins~.,data = usetest),type = "response")
+```
