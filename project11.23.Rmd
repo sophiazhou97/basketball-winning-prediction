@@ -13,21 +13,31 @@ library(leaps)
 library(glmnet)
 library(pls)
 ```
-
+#import files
 ```{r}
 train <- read.csv("~/Downloads/fall-2019-stats-101c/train.csv")
+#exclude catagorical variable
 clean<-train[,-c(1,2,4,5,6,7,8)]
 clean$HTWins<-ifelse(clean$HTWins=="Yes", 1, 0)
+```
+
+#PLS
+```{r}
 pls.fit<-plsr(HTWins ~.,data=clean, scale=T, validation="CV")
 validationplot(pls.fit, val.type="MSEP")
 summary(pls.fit)
+pred.pls<-predict(pls.fit,test[,-1],ncomp=10,type="response)
+predict<-ifelse(pred.pls>0.5,"Yes","No") 
+table(predict,test[,1])
 ```
-
+#PCR
 ```{r}
 model.pcr<-pcr(HTWins~.,data=clean,scale=T,validation="CV") 
 summary(model.pcr)
 validationplot(model.pcr, val.type="MSEP")
-print(model.pcr[["coefficients"]][,,10])
+pred.pcr<-predict(model.pcr, test[,-1],ncomp=10)
+predict<-ifelse(pred.pcr>0.5,"Yes","No") 
+table(predict,test[,1])
 ```
 
 ```{r}
