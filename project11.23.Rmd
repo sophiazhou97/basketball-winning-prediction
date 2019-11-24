@@ -1,0 +1,32 @@
+---
+title: "101c final project"
+author: "Wenxin Zhou"
+date: "11/23/2019"
+output: html_document
+---
+
+```{r}
+library(class) 
+library(ISLR) 
+library(MASS) 
+library(leaps) 
+library(glmnet)
+library(pls)
+```
+
+```{r}
+train <- read.csv("~/Downloads/fall-2019-stats-101c/train.csv")
+clean<-train[,-c(1,2,4,5,6,7,8)]
+clean$HTWins<-ifelse(clean$HTWins=="Yes", 1, 0)
+pls.fit<-plsr(HTWins ~.,data=clean, scale=T, validation="CV")
+validationplot(pls.fit, val.type="MSEP")
+summary(pls.fit)
+```
+
+```{r}
+model.pcr<-pcr(HTWins~.,data=clean,scale=T,validation="CV") 
+summary(model.pcr)
+validationplot(model.pcr, val.type="MSEP")
+print(model.pcr[["coefficients"]][,,10])
+```
+
