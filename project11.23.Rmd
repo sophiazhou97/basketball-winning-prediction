@@ -103,6 +103,7 @@ train.data <- data.frame(HTWins = train$HTWins, prin_comp$x) ##???
 train.data <- train.data[,1:100]
 #head(train.data)
 #trainx <- data.frame(trainx)[,1:100]
+#run a decision tree
 library(rpart)
 rpart.model <- rpart(train.data~trainx, method = "anova")
 rpart.model
