@@ -121,3 +121,13 @@ rpart.prediction
 p<-ifelse(rpart.prediction>0.5,"Yes","No")
 
 ```
+
+```{r}
+# Random Forest 
+small <- usetrain[,bstindex]
+stest <- usetest[,bstindex]
+rf <- randomForest(HTWins~.,data=small,mtry=9,importance=TRUE)
+print(rf)
+predrf <- predict(rf,newdata = stest)
+table(predrf,stest$HTWins)
+``` 
